@@ -1,6 +1,9 @@
 package id.codecamp.security.config;
 
+import id.codecamp.security.filter.AuthoritiesLoggingAfterFilter;
+import id.codecamp.security.filter.AuthoritiesLoggingAtFilter;
 import id.codecamp.security.filter.CsrfCookieFilter;
+import id.codecamp.security.filter.RequestValidationBeforeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -36,6 +39,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
                         .ignoringRequestMatchers("/contact", "/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT") // exact match
