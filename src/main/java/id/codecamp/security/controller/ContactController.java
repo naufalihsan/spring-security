@@ -1,6 +1,8 @@
 package id.codecamp.security.controller;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import id.codecamp.security.model.Contact;
@@ -19,10 +21,16 @@ public class ContactController {
     private ContactRepository contactRepository;
 
     @PostMapping("/contact")
-    public Contact saveContactInquiryDetails(@RequestBody Contact contact) {
+    public List<Contact> saveContactInquiryDetails(@RequestBody List<Contact> contacts) {
+        Contact contact = contacts.getFirst();
         contact.setContactId(getServiceReqNumber());
         contact.setCreateDt(new Date(System.currentTimeMillis()));
-        return contactRepository.save(contact);
+        contact = contactRepository.save(contact);
+
+        List<Contact> returnContacts = new ArrayList<>();
+        returnContacts.add(contact);
+
+        return returnContacts;
     }
 
     public String getServiceReqNumber() {
