@@ -1,5 +1,6 @@
 package id.codecamp.security.config;
 
+import id.codecamp.security.model.Authority;
 import id.codecamp.security.model.Customer;
 import id.codecamp.security.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class BankBasicAuthProvider implements AuthenticationProvider {
@@ -34,9 +36,7 @@ public class BankBasicAuthProvider implements AuthenticationProvider {
 
         if (!customer.isEmpty()) {
             if (passwordEncoder.matches(pwd, customer.getFirst().getPwd())) {
-                final List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(customer.getFirst().getRole()));
-
+                final List<GrantedAuthority> authorities = getGrantedAuthorities(customer.getFirst().getAuthorities());
                 return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
             } else {
                 throw new BadCredentialsException("Invalid password!");
@@ -44,6 +44,14 @@ public class BankBasicAuthProvider implements AuthenticationProvider {
         } else {
             throw new BadCredentialsException("No user registered with this details!");
         }
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
     }
 
     @Override

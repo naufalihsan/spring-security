@@ -27,7 +27,7 @@ public class LoginController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
         try {
-            String hashPwd = passwordEncoder.encode(customer.getPwd());
+            final String hashPwd = passwordEncoder.encode(customer.getPwd());
             customer.setPwd(hashPwd);
             customer.setCreateDt(String.valueOf(new Date(System.currentTimeMillis())));
 
