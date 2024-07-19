@@ -43,8 +43,8 @@ public class SecurityConfig {
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT") // exact match
-                        .requestMatchers("/myBalance").hasAnyRole("ADMIN", "USER") // with prefix ROLE_*
-                        .requestMatchers("/myLoans").hasRole("USER")
+                        .requestMatchers("/myBalance").hasAnyRole("ADMIN", "USER") // match prefix ROLE_*
+                        .requestMatchers("/myLoans").authenticated()
                         .requestMatchers("/myCards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
                         .requestMatchers("/notices", "/contact", "/register").permitAll()

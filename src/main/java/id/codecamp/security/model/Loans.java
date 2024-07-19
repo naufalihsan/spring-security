@@ -3,7 +3,6 @@ package id.codecamp.security.model;
 import java.sql.Date;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "loans")
